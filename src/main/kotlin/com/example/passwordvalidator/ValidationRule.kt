@@ -141,3 +141,31 @@ class NotEmptyRule : ValidationRule {
     // isNotEmpty() は文字列が空でない場合にtrueを返す
     override fun validate(password: String): Boolean = password.isNotEmpty()
 }
+
+/**
+ * 連続する同一文字を制限するルール
+ * 
+ * パスワード内で連続して出現する同一文字の数を制限します。
+ * 例えば、3文字以上連続する同一文字を禁止する場合に使用します。
+ */
+class NoConsecutiveIdenticalCharactersRule(private val maxConsecutive: Int = 3) : ValidationRule {
+    override val description: String =
+        "パスワードには同一文字が連続して${maxConsecutive}回以上出現してはいけません"
+    
+    override fun validate(password: String): Boolean {
+        if (password.isEmpty()) return true
+        
+        var count = 1
+        for (i in 0 until password.length - 1) {
+            if (password[i] == password[i + 1]) {
+                count++
+                if (count >= maxConsecutive) {
+                    return false
+                }
+            } else {
+                count = 1
+            }
+        }
+        return true
+    }
+}

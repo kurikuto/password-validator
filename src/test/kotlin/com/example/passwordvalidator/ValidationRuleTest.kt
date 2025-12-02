@@ -253,4 +253,27 @@ class ValidationRuleTest {
             assertFalse(rule.validate(""))
         }
     }
+
+    @Nested
+    @DisplayName("NoConsecutiveIdenticalCharactersRule のテスト")
+    inner class NoConsecutiveIdenticalCharactersRuleTest {
+
+        @Test
+        @DisplayName("連続する3文字以上がない場合はtrueを返す")
+        fun `should return true when no consecutive identical characters`() {
+            val rule = NoConsecutiveIdenticalCharactersRule(3)
+
+            assertTrue(rule.validate("password"))
+            assertTrue(rule.validate("aabbcc")) // 2文字連続は許可
+        }
+
+        @Test
+        @DisplayName("連続する3文字以上がある場合はfalseを返す")
+        fun `should return false when there are consecutive identical characters`() {
+            val rule = NoConsecutiveIdenticalCharactersRule(3)
+
+            assertFalse(rule.validate("passsword")) // 's'が3回連続
+            assertFalse(rule.validate("aaabbb"))     // 'a'と'b'が3回連続
+        }
+    }
 }
